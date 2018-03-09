@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.git
+.github
+
+# Build folder
+lib/
+
+# Tests
+spec/
+
+# IDEs
+.idea/
