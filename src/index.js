@@ -60,7 +60,20 @@ app.get('/:region(all|north|center|south)/:year(\\d{4})-:month(\\d{2})-:day(\\d{
       thang: req.params.month,
       nam: req.params.year
     }
-  }, (error, response, body) => resultHandler(body, req, res));
+  }, (error, response, body) => {
+    if(error){
+      console.log('request error', error);
+    }
+
+    console.log('response.statusCode', response.statusCode);
+
+    if (response.statusCode == 200){
+      resultHandler(body, req, res);
+    } else {
+      res.send(JSON.stringify([]));
+    }
+
+  });
   // res.end('Hello Node.js Server!')
 });
 
