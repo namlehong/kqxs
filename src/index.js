@@ -35,11 +35,16 @@ function northResultExtract($){
 }
 
 function resultHandler(body, req, res){
-  let $ = cheerio.load(body);
+  try{
+    let $ = cheerio.load(body);
 
-  let result = [].concat(southCenterResultExtract($), northResultExtract($));
+    let result = [].concat(southCenterResultExtract($), northResultExtract($));
 
-  result.forEach(i => Object.assign(i, {date: req.params.year+'-'+req.params.month+'-'+req.params.day}));
+    result.forEach(i => Object.assign(i, {date: req.params.year+'-'+req.params.month+'-'+req.params.day}));
+  }catch(e){
+    console.log(e, body);
+    let result = [];
+  }
 
   // console.log('result', $('.bkqmiennam').html());
   res.send(JSON.stringify(result));
