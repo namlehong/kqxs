@@ -63,6 +63,8 @@ app.get('/:region(all|north|center|south)/:year(\\d{4})-:month(\\d{2})-:day(\\d{
   }, (error, response, body) => {
     if(error){
       console.log('request error', error);
+      res.send(JSON.stringify([]));
+      return;
     }
 
     console.log('response.statusCode', response.statusCode);
