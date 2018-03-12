@@ -1,5 +1,6 @@
 // content of index.js
 const http = require('http')
+const https = require('https')
 const app = require('express')()
 const port = 3000
 const request = require('request')
@@ -41,14 +42,15 @@ function resultHandler(body, req, res){
     let result = [].concat(southCenterResultExtract($), northResultExtract($));
 
     result.forEach(i => Object.assign(i, {date: req.params.year+'-'+req.params.month+'-'+req.params.day}));
+    res.send(JSON.stringify(result));
   }catch(e){
     console.log(e, body);
-    let result = [];
+    res.send(JSON.stringify([]));
   }
-
-  // console.log('result', $('.bkqmiennam').html());
-  res.send(JSON.stringify(result));
 }
+
+var pool = new https.Agent();
+pool.maxSockets = 3;
 
 app.get('/:region(all|north|center|south)/:year(\\d{4})-:month(\\d{2})-:day(\\d{2})', (req, res) => {
   console.log(req.url, req.params)
@@ -59,15 +61,14 @@ app.get('/:region(all|north|center|south)/:year(\\d{4})-:month(\\d{2})-:day(\\d{
       ngay: req.params.day,
       thang: req.params.month,
       nam: req.params.year
-    }
+    },
+    agent: pool;
   }, (error, response, body) => {
     if(error){
-      console.log('request error', error);
+      console.log('request error', req.url, error);
       res.send(JSON.stringify([]));
       return;
     }
-
-    console.log('response.statusCode', response.statusCode);
 
     if (response.statusCode == 200){
       resultHandler(body, req, res);
